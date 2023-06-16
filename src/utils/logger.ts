@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import config from '@exmpl/config'
 import winston from 'winston'
 

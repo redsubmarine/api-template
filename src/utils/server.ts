@@ -21,12 +21,21 @@ export async function createServer(): Promise<Express> {
   const server = express()
   // here we can initialize body/cookies parsers, connect logger, for example morgan
   server.use(bodyParser.json())
+
+  /* istanbul ignore next */
   if (config.morganLogger) {
     server.use(morgan(':method :url :status :response-time ms - :res[content-length]'))
   }
 
-  morganBody(server)
-  server.use(expressDevLogger)
+  /* istanbul ignore next */
+  if (config.morganBodyLogger) {
+    morganBody(server)
+  }
+
+  /* istanbul ignore next */
+  if (config.exmplDevLogger) {
+    server.use(expressDevLogger)
+  }
 
   const validatorOptions = {
     coerceTypes: true,

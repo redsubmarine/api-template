@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import logger from '@exmpl/utils/logger'
 import express from 'express'
 
