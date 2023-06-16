@@ -38,13 +38,12 @@ export async function createServer(): Promise<Express> {
   }
 
   const validatorOptions = {
-    coerceTypes: true,
+    // coerceTypes: true,
     apiSpec: ymlSpecFile,
     validateRequests: true,
     validateResponses: true,
   }
 
-  //   await new OpenApiValidator(validatorOptions).install(server) // if version 3.*
   server.use(OpenApiValidator.middleware(validatorOptions))
 
   // error customization, if request is invalid

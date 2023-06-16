@@ -16,6 +16,11 @@ const parseEnv = dotenvParseVariables(env)
 type LogLevel = 'silent' | 'error' | 'warn' | 'info' | 'http' | 'verbose' | 'debug' | 'silly'
 
 interface Config {
+  mongo: {
+    url: string
+    useCreateIndex: boolean
+    autoIndex: boolean
+  }
   morganLogger: boolean
   morganBodyLogger: boolean
   exmplDevLogger: boolean
@@ -23,6 +28,11 @@ interface Config {
 }
 
 const config: Config = {
+  mongo: {
+    url: parseEnv.MONGO_URL as string,
+    useCreateIndex: parseEnv.MONGO_CREATE_INDEX as boolean,
+    autoIndex: parseEnv.MONGO_AUTO_INDEX as boolean,
+  },
   morganLogger: parseEnv.MORGAN_LOGGER as boolean,
   morganBodyLogger: parseEnv.MORGAN_BODY_LOGGER as boolean,
   exmplDevLogger: parseEnv.EXMPL_DEV_LOGGER as boolean,

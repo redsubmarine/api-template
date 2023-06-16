@@ -76,19 +76,18 @@ describe('GET /goodbye', () => {
   })
 
   it('should return 401 & valid eror response if authorization header field is missed', async () => {
-    request(server)
-      .get(`/api/v1/goodbye`)
-      .expect('Content-Type', /json/)
-      .expect(401)
-      .end((err, res) => {
-        if (err) return err
-        expect(res.body).toMatchObject({
-          error: {
-            type: 'request_validation',
-            message: 'Authorization header required',
-            errors: expect.anything(),
-          },
-        })
+    try {
+      const res = await request(server).get(`/api/v1/goodbye`).expect('Content-Type', /json/).expect(401)
+
+      expect(res.body).toMatchObject({
+        error: {
+          type: 'request_validation',
+          message: 'Authorization header required',
+          errors: expect.anything(),
+        },
       })
+    } catch (err) {
+      expect(err).toBeNull()
+    }
   })
 })
