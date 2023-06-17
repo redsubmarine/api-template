@@ -1,8 +1,9 @@
 import fs from 'fs'
 import jwt, { SignOptions, VerifyOptions } from 'jsonwebtoken'
 
-import User from '@exmpl/api/models/user'
+import User, { IUser } from '@exmpl/api/models/user'
 import config from '@exmpl/config'
+import cacheLocal from '@exmpl/utils/cache_local'
 import logger from '@exmpl/utils/logger'
 
 export type ErrorResponse = { error: { type: string; message: string } }
@@ -64,9 +65,19 @@ function createAuthToken(userId: string): Promise<{ token: string; expireAt: Dat
 
 async function login(login: string, password: string): Promise<LoginUserResponse> {
   try {
-    const user = await User.findOne({ email: login })
+    // const user = await User.findOne({ email: login })
+    // if (!user) {
+    //   return { error: { type: 'invalid_credentials', message: 'Invalid Login/Password' } }
+    // }
+    let user: IUser | null | undefined = cacheLocal.get<IUser>(login)
     if (!user) {
-      return { error: { type: 'invalid_credentials', message: 'Invalid Login/Password' } }
+      user = await User.findOne({ email: login })
+      if (!user) {
+        return { error: { type: 'invalid_credentials', message: 'Invalid Login/Password' } }
+      }
+
+      cacheLocal.set(user._id.toString(), user)
+      cacheLocal.set(login, user)
     }
 
     const passwordMatch = await user.comparePassword(password)

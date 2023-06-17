@@ -99,3 +99,27 @@ describe('GET /goodbye', () => {
     }
   })
 })
+
+async function sendGoodbye(token: string): Promise<void> {
+  return new Promise(async (resolve, reject) => {
+    await request(server)
+      .get(`/api/v1/goodbye`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect('Content-Type', /json/)
+      .expect(200)
+    resolve()
+  })
+}
+
+it('goodbye performance test', async () => {
+  const dummy = await createDummyAndAuthorize()
+
+  const now = new Date().getTime()
+  let i = 0
+  do {
+    i += 1
+    await sendGoodbye(dummy.token)
+  } while (new Date().getTime() - now < 1000)
+
+  console.log(`goodbye performance test: ${i}`)
+})
