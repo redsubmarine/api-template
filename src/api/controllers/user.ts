@@ -43,3 +43,25 @@ export function createUser(req: express.Request, res: express.Response) {
       writeJsonResponse(res, 500, { error: { type: 'internal_server_error', message: 'Internal Server Error' } })
     })
 }
+
+export function login(req: express.Request, res: express.Response) {
+  const { email, password } = req.body
+
+  UserService.login(email, password)
+    .then((resp) => {
+      if ((resp as any).error) {
+        if ((resp as ErrorResponse).error.type === 'invalid_credentials') {
+          writeJsonResponse(res, 404, resp)
+        } else {
+          throw new Error(`unsupported ${resp}`)
+        }
+      } else {
+        const { userId, token, expireAt } = resp as { userId: string; token: string; expireAt: Date }
+        writeJsonResponse(res, 200, { userId: userId, token: token }, { 'X-Expires-After': expireAt.toISOString() })
+      }
+    })
+    .catch((err) => {
+      logger.error(`login: ${err}`)
+      writeJsonResponse(res, 500, { error: { type: 'internal_server_error', message: 'Internal Server Error' } })
+    })
+}

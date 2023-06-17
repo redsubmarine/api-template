@@ -16,6 +16,9 @@ const parseEnv = dotenvParseVariables(env)
 type LogLevel = 'silent' | 'error' | 'warn' | 'info' | 'http' | 'verbose' | 'debug' | 'silly'
 
 interface Config {
+  privateKeyFile: string
+  privateKeyPassphrase: string
+  publicKeyFile: string
   mongo: {
     url: string
     useCreateIndex: boolean
@@ -28,6 +31,9 @@ interface Config {
 }
 
 const config: Config = {
+  privateKeyFile: parseEnv.PRIVATE_KEY_FILE as string,
+  privateKeyPassphrase: parseEnv.PRIVATE_KEY_PASSPHRASE as string,
+  publicKeyFile: parseEnv.PUBLIC_KEY_FILE as string,
   mongo: {
     url: parseEnv.MONGO_URL as string,
     useCreateIndex: parseEnv.MONGO_CREATE_INDEX as boolean,

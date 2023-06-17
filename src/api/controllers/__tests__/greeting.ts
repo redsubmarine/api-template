@@ -1,12 +1,19 @@
 import { Express } from 'express-serve-static-core'
 import request from 'supertest'
 
+import { createDummyAndAuthorize } from '@exmpl/tests/user'
+import db from '@exmpl/utils/db'
 import { createServer } from '@exmpl/utils/server'
 
 let server: Express
 
 beforeAll(async () => {
+  await db.open()
   server = await createServer()
+})
+
+afterAll(async () => {
+  await db.close()
 })
 
 describe('GET /hello', () => {
@@ -52,14 +59,15 @@ describe('GET /hello', () => {
 
 describe('GET /goodbye', () => {
   it('should return 200 & valid response to authorization with fakeToken request', async () => {
+    const { token, userId } = await createDummyAndAuthorize()
     request(server)
       .get(`/api/v1/goodbye`)
-      .set('Authorization', 'Bearer fakeToken')
+      .set('Authorization', `Bearer ${token}`)
       .expect('Content-Type', /json/)
       .expect(200)
       .end((err, res) => {
         if (err) return err
-        expect(res.body).toMatchObject({ message: 'Goodbye, fakeUserId!' })
+        expect(res.body).toMatchObject({ message: `Goodbye, ${userId}!` })
       })
   })
 
