@@ -29,6 +29,7 @@ interface Config {
   exmplDevLogger: boolean
   loggerLevel: LogLevel
   localCacheTtl: number
+  redisUrl: string
 }
 
 const config: Config = {
@@ -45,6 +46,7 @@ const config: Config = {
   exmplDevLogger: parseEnv.EXMPL_DEV_LOGGER as boolean,
   loggerLevel: parseEnv.LOGGER_LEVEL as LogLevel,
   localCacheTtl: parseEnv.LOCAL_CACHE_TTL as number,
+  redisUrl: parseEnv.REDIS_URL as string,
 }
 
 export default config

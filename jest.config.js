@@ -4,4 +4,5 @@ module.exports = {
   moduleNameMapper: {
     '@exmpl/(.*)': '<rootDir>/src/$1',
   },
+  testPathIgnorePatterns: ['.d.ts', '.js'],
 }

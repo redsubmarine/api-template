@@ -1,8 +1,11 @@
 import db from '@exmpl/utils/db'
 import logger from '@exmpl/utils/logger'
-import { createServer } from './utils/server'
+import { createServer } from '@exmpl/utils/server'
+import cacheExternal from './utils/cache_external'
 
-db.open()
+cacheExternal
+  .open()
+  .then(() => db.open())
   .then(() => createServer())
   .then((server) => {
     server.listen(3000, () => {

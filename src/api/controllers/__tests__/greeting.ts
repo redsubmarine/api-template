@@ -2,17 +2,20 @@ import { Express } from 'express-serve-static-core'
 import request from 'supertest'
 
 import { createDummyAndAuthorize } from '@exmpl/tests/user'
+import cacheExternal from '@exmpl/utils/cache_external'
 import db from '@exmpl/utils/db'
 import { createServer } from '@exmpl/utils/server'
 
 let server: Express
 
 beforeAll(async () => {
+  await cacheExternal.open()
   await db.open()
   server = await createServer()
 })
 
 afterAll(async () => {
+  await cacheExternal.close()
   await db.close()
 })
 
